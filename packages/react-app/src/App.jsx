@@ -758,10 +758,10 @@ function App(props) {
         <Button
           type="primary"
           onClick={() => {
-            faucetTx({
+            faucetTx([{
               to: address,
               value: parseEther("0.01"),
-            });
+            }]);
             setFaucetClicked(true);
           }}
         >
@@ -986,26 +986,27 @@ function App(props) {
                 console.log("PARSEDfloatVALUE",value)
               }
 
-              let txConfig = {
-                to: toAddress,
-                chainId: selectedChainId,
-                value,
-              }
+              let txConfig = [
+                {
+                  to: toAddress,
+                  value,
+                },
+              ];
 
-              if(targetNetwork.name=="arbitrum"){
-                //txConfig.gasLimit = 21000;
-                //ask rpc for gas price
-              }else if(targetNetwork.name=="optimism"){
-                //ask rpc for gas price
-              }else if(targetNetwork.name=="gnosis"){
-                //ask rpc for gas price
-              }else if(targetNetwork.name=="polygon"){
-                  //ask rpc for gas price
-              }else{
-                txConfig.gasPrice = gasPrice
-              }
+              // if(targetNetwork.name=="arbitrum"){
+              //   //txConfig.gasLimit = 21000;
+              //   //ask rpc for gas price
+              // }else if(targetNetwork.name=="optimism"){
+              //   //ask rpc for gas price
+              // }else if(targetNetwork.name=="gnosis"){
+              //   //ask rpc for gas price
+              // }else if(targetNetwork.name=="polygon"){
+              //     //ask rpc for gas price
+              // }else{
+              //   txConfig.gasPrice = gasPrice
+              // }
 
-              console.log("SEND AND NETWORK",targetNetwork)
+              console.log("SEND AND NETWORK", targetNetwork);
               let result = tx(txConfig);
               // setToAddress("")
               setAmount("");

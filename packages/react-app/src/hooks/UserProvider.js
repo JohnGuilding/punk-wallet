@@ -1,5 +1,8 @@
 import { Web3Provider } from "@ethersproject/providers";
 import BurnerProvider from "burner-provider";
+// import BurnerProvider from "./../helpers/burnerProvider";
+// import { CustomProvider } from "./../helpers/providerEngine";
+import { Wallet } from "@ethersproject/wallet";
 import { useMemo } from "react";
 //import { INFURA_ID } from "../constants";
 
@@ -54,15 +57,25 @@ const useUserProvider = (injectedProvider, localProvider) =>
       }
     }
 
+    // - Burner provider uses web3-provider-engine to create a custom provider
+    // - Burner provider creates a ECDSA keypair within this custom provider
+    // - It also creates a wallet using ethers, does this mean we can't use it?
+
+    // create private and store in local storage
+    const privateKey = Wallet.createRandom().privateKey;
+    window.localStorage.setItem("metaPrivateKey", privateKey);
+
     console.log("🔥 Using burner provider", burnerConfig);
     if (localProvider.connection && localProvider.connection.url) {
       burnerConfig.rpcUrl = localProvider.connection.url;
       return new Web3Provider(new BurnerProvider(burnerConfig));
+      // return new Web3Provider(CustomProvider(burnerConfig));
     }
     // eslint-disable-next-line no-underscore-dangle
     const networkName = localProvider._network && localProvider._network.name;
     burnerConfig.rpcUrl = `https://rpc.scaffoldeth.io:48544`;
     return new Web3Provider(new BurnerProvider(burnerConfig));
+    // return new Web3Provider(CustomProvider(burnerConfig));
   }, [injectedProvider, localProvider]);
 
 export default useUserProvider;

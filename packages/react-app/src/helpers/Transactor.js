@@ -2,6 +2,7 @@ import { hexlify } from "@ethersproject/bytes";
 import { parseUnits } from "@ethersproject/units";
 import { notification } from "antd";
 import Notify from "bnc-notify";
+import { Aggregator, BlsWalletWrapper } from "bls-wallet-clients";
 import { BLOCKNATIVE_DAPPID } from "../constants";
 import { TransactionManager } from "./TransactionManager";
 
@@ -49,8 +50,31 @@ export default function Transactor(provider, gasPrice, etherscan, injectedProvid
           //if (!tx.gasLimit) {
           //  tx.gasLimit = hexlify(120000);
           //}
+
+          const actions = tx.map(tx => ({
+            ethValue: tx.value ?? "0",
+            contractAddress: tx.to,
+            encodedFunction: tx.data ?? "0x",
+          }));
+
+          const privateKey = localStorage.getItem("metaPrivateKey");
+          const verificationGateway = "0xa15954659EFce154a3B45cE88D8158A02bE2049A";
+          const wallet = await BlsWalletWrapper.connect(privateKey, verificationGateway, provider);
+
+          const nonce = await BlsWalletWrapper.Nonce(wallet.PublicKey(), verificationGateway, provider);
+          const bundle = wallet.sign({
+            nonce,
+            actions,
+          });
+          const aggregator = new Aggregator("http://localhost:3000");
+
           console.log("RUNNING TX", tx);
-          result = await signer.sendTransaction(tx);
+          result = await aggregator.add(bundle);
+
+          if ("failures" in result) {
+            throw new Error(JSON.stringify(result));
+          }
+          // result = await signer.sendTransaction(tx);
 
           // Store transactionResponse in localStorage, so we can speed up the transaction if needed
           // Injected providers like MetaMask can manage their transactions on their own

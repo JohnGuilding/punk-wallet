@@ -83,10 +83,10 @@ export default function Faucet(props) {
           <Tooltip title="Faucet: Send local ether to an address.">
             <Button
               onClick={() => {
-                tx({
-                  to: address,
-                  value: parseEther("0.01"),
-                });
+                tx([{
+                    to: address,
+                    value: parseEther("0.01"),
+                  }]);
                 setAddress("");
               }}
               shape="circle"
