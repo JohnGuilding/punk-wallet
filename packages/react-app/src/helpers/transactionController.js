@@ -1,5 +1,4 @@
 import { Aggregator, BlsWalletWrapper } from "bls-wallet-clients";
-import { useWallet } from "../hooks";
 
 export const sendTransaction = async (provider, wallet, params) => {
   const actions = params.map(tx => ({
