@@ -56,8 +56,8 @@ const useUserProvider = (injectedProvider, localProvider) =>
     }
 
     // create private and store in local storage
-    const privateKey = Wallet.createRandom().privateKey;
-    window.localStorage.setItem("metaPrivateKey", privateKey);
+    // const privateKey = Wallet.createRandom().privateKey;
+    // window.localStorage.setItem("metaPrivateKey", privateKey);
 
     console.log("🔥 Using burner provider", burnerConfig);
     if (localProvider.connection && localProvider.connection.url) {
