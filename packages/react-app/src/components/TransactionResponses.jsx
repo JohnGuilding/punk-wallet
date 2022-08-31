@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { TransactionManager } from "../helpers/TransactionManager";
 import { TransactionHistory } from "./";
 
-export default function TransactionResponses({provider, signer, injectedProvider, address, chainId, blockExplorer}) {
-  const transactionManager = new TransactionManager(provider, signer, true);
+export default function TransactionResponses({provider, injectedProvider, address, chainId, blockExplorer}) {
+  const transactionManager = new TransactionManager(provider, true);
 
   const [transactionResponsesArray, setTransactionResponsesArray] = useState([]);
 

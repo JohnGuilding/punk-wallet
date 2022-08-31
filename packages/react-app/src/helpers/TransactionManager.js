@@ -1,3 +1,4 @@
+import { sendTransaction } from "./transactionController";
 const { BigNumber, ethers } = require("ethers");
 
 const STORAGE_KEY = "transactionResponses";
@@ -6,7 +7,6 @@ const LOCAL_STORAGE_CHANGED_EVENT_NAME = "localStorageChanged";
 export class TransactionManager {
 	constructor(provider, signer, loggingEnabled) {
 		this.provider = provider;
-		this.signer = signer;
 		this.loggingEnabled = loggingEnabled ? loggingEnabled : false
 	}
 
@@ -148,7 +148,7 @@ export class TransactionManager {
 		return !(confirmations > 0);
 	}
 
-	cancelTransaction(key) {
+	async cancelTransaction(key) {
 		let transactionParams = this.getSpeedUpTransactionParams(key, 10);
 
 		transactionParams.to = transactionParams.from;
@@ -156,10 +156,10 @@ export class TransactionManager {
 		transactionParams.value = "0x";
 		this.log("transactionParams", transactionParams);
 
-		return this.signer.sendTransaction(transactionParams);
+    return await sendTransaction(this.provider, transactionParams);
 	}
 	
-	speedUpTransaction(key, speedUpPercentage) {
+	async speedUpTransaction(key, speedUpPercentage) {
 		if (!speedUpPercentage) {
 			speedUpPercentage = 10;
 		}
@@ -171,7 +171,7 @@ export class TransactionManager {
 			return;
 		}
 
-		return this.signer.sendTransaction(transactionParams);
+    return await sendTransaction(this.provider, transactionParams);
 	}
 
 	getSpeedUpTransactionParams(key, speedUpPercentage) {

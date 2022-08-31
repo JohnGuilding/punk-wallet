@@ -58,7 +58,7 @@ export default function Transactor(provider, gasPrice, etherscan, injectedProvid
           }));
 
           const privateKey = localStorage.getItem("metaPrivateKey");
-          const verificationGateway = "0xa15954659EFce154a3B45cE88D8158A02bE2049A";
+          const verificationGateway = "0xa15954659EFce154a3B45cE88D8158A02bE2049A"; // This may change after subsequent deployments
           const wallet = await BlsWalletWrapper.connect(privateKey, verificationGateway, provider);
 
           const nonce = await BlsWalletWrapper.Nonce(wallet.PublicKey(), verificationGateway, provider);

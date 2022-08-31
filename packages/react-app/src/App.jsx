@@ -4,7 +4,6 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Col, Row, Select, Spin, Input, Modal, notification } from "antd";
 import "antd/dist/antd.css";
-import { useUserAddress } from "eth-hooks";
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import Web3Modal from "web3modal";
 import "./App.css";
@@ -25,11 +24,12 @@ import {
 } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
-import { useBalance, useExchangePrice, useGasPrice, useLocalStorage, usePoller, useUserProvider } from "./hooks";
+import { useBalance, useExchangePrice, useGasPrice, useLocalStorage, usePoller, useUserProvider, useAddress } from "./hooks";
 
 import WalletConnect from "@walletconnect/client";
 
 import { TransactionManager } from "./helpers/TransactionManager";
+import { sendTransaction } from "./helpers/transactionController";
 
 const { confirm } = Modal;
 
@@ -201,7 +201,7 @@ function App(props) {
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
-  const address = useUserAddress(userProvider);
+  const address = useAddress(userProvider);
 
   // You can warn the user if you would like them to be on a specific network
   // I think the naming is misleading a little bit
@@ -365,8 +365,6 @@ function App(props) {
 
             if (payload.method === 'eth_sendTransaction') {
               try {
-                let signer = userProvider.getSigner();
-
                 // I'm not sure if all the Dapps send an array or not
                 let params = payload.params;
                 if (Array.isArray(params)) {
@@ -389,10 +387,9 @@ function App(props) {
                 if (params.data === "") {
                   delete params.data;  
                 }
+                result = await sendTransaction(userProvider, params);
 
-                result = await signer.sendTransaction(params);
-
-                const transactionManager = new TransactionManager(userProvider, signer, true);
+                const transactionManager = new TransactionManager(userProvider, true);
                 transactionManager.setTransactionResponse(result);
               }
               catch (error) {
@@ -1138,7 +1135,6 @@ function App(props) {
       <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
           <TransactionResponses
              provider={userProvider}
-             signer={userProvider.getSigner()}
              injectedProvider={injectedProvider}
              address={address} 
              chainId={targetNetwork.chainId}
