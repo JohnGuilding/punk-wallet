@@ -24,7 +24,7 @@ import {
 } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
-import { useBalance, useExchangePrice, useGasPrice, useLocalStorage, usePoller, useUserProvider, useAddress } from "./hooks";
+import { useBalance, useExchangePrice, useGasPrice, useLocalStorage, usePoller, useUserProvider, useAddress, useWallet } from "./hooks";
 
 import WalletConnect from "@walletconnect/client";
 
@@ -202,6 +202,7 @@ function App(props) {
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useAddress(userProvider);
+  const wallet = useWallet(userProvider);
 
   // You can warn the user if you would like them to be on a specific network
   // I think the naming is misleading a little bit
@@ -213,10 +214,10 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice, undefined, injectedProvider);
+  const tx = Transactor(userProvider, gasPrice, undefined, injectedProvider, wallet);
 
   // Faucet Tx can be used to send funds from the faucet
-  const faucetTx = Transactor(localProvider, gasPrice);
+  const faucetTx = Transactor(localProvider, gasPrice, undefined, undefined, wallet);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
@@ -387,7 +388,7 @@ function App(props) {
                 if (params.data === "") {
                   delete params.data;  
                 }
-                result = await sendTransaction(userProvider, params);
+                result = await sendTransaction(userProvider, wallet, params);
 
                 const transactionManager = new TransactionManager(userProvider, true);
                 transactionManager.setTransactionResponse(result);
@@ -839,7 +840,7 @@ function App(props) {
     web3Modal && web3Modal.cachedProvider ? (
       ""
     ) : (
-      <Wallet key="wallet" address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
+      <Wallet key="wallet" address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} wallet={wallet} />
     );
 
   return (

@@ -17,3 +17,4 @@ export { default as useResolveName } from "./ResolveName";
 export { default as useTokenList } from "./TokenList";
 export { default as useUserProvider } from "./UserProvider";
 export { default as useAddress } from "./Address";
+export { default as useWallet } from "./Wallet";

@@ -7,8 +7,7 @@ const useAddress = provider => {
   useEffect(() => {
     if (provider) {
       const fetchAddress = async () => {
-        const userAddress = await getAddress(provider);
-        setAddress(userAddress);
+        setAddress(await getAddress(provider));
       };
       fetchAddress();
     }

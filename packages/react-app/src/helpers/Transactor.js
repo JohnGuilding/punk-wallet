@@ -5,12 +5,13 @@ import Notify from "bnc-notify";
 import { Aggregator, BlsWalletWrapper } from "bls-wallet-clients";
 import { BLOCKNATIVE_DAPPID } from "../constants";
 import { TransactionManager } from "./TransactionManager";
+import { sendTransaction } from "./../helpers/transactionController";
 
 // this should probably just be renamed to "notifier"
 // it is basically just a wrapper around BlockNative's wonderful Notify.js
 // https://docs.blocknative.com/notify
 
-export default function Transactor(provider, gasPrice, etherscan, injectedProvider) {
+export default function Transactor(provider, gasPrice, etherscan, injectedProvider, wallet) {
   if (typeof provider !== "undefined") {
     // eslint-disable-next-line consistent-return
     return async tx => {
@@ -51,29 +52,9 @@ export default function Transactor(provider, gasPrice, etherscan, injectedProvid
           //  tx.gasLimit = hexlify(120000);
           //}
 
-          const actions = tx.map(tx => ({
-            ethValue: tx.value ?? "0",
-            contractAddress: tx.to,
-            encodedFunction: tx.data ?? "0x",
-          }));
-
-          const privateKey = localStorage.getItem("metaPrivateKey");
-          const verificationGateway = "0xa15954659EFce154a3B45cE88D8158A02bE2049A"; // This may change after subsequent deployments
-          const wallet = await BlsWalletWrapper.connect(privateKey, verificationGateway, provider);
-
-          const nonce = await BlsWalletWrapper.Nonce(wallet.PublicKey(), verificationGateway, provider);
-          const bundle = wallet.sign({
-            nonce,
-            actions,
-          });
-          const aggregator = new Aggregator("http://localhost:3000");
-
           console.log("RUNNING TX", tx);
-          result = await aggregator.add(bundle);
+          result = await sendTransaction(provider, wallet, tx)
 
-          if ("failures" in result) {
-            throw new Error(JSON.stringify(result));
-          }
           // result = await signer.sendTransaction(tx);
 
           // Store transactionResponse in localStorage, so we can speed up the transaction if needed
