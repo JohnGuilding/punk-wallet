@@ -56,7 +56,15 @@ const { ethers } = require("ethers");
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem("network");
 // let targetNetwork = NETWORKS[cachedNetwork || "ethereum"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-let targetNetwork = "localhost"
+let targetNetwork = {
+  name: "localhost",
+  color: "#666666",
+  price: "uniswap", // use mainnet eth price for localhost
+  chainId: 31337,
+  blockExplorer: "",
+  rpcUrl: "http://localhost:8545",
+}
+
 if (!targetNetwork) {
   targetNetwork = NETWORKS["ethereum"];
 }
@@ -361,7 +369,7 @@ function App(props) {
           size: "large",
           title: title,
           icon: <SendOutlined/>,
-          content: <WalletConnectTransactionDisplay payload={payload} provider={mainnetProvider}/>,
+          content: <WalletConnectTransactionDisplay payload={payload} provider={userProvider}/>,
           onOk:async ()=>{
             let result;
 
@@ -841,7 +849,7 @@ function App(props) {
     web3Modal && web3Modal.cachedProvider ? (
       ""
     ) : (
-      <Wallet key="wallet" address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} wallet={wallet} />
+      <Wallet key="wallet" address={address} provider={userProvider} ensProvider={userProvider} price={price} wallet={wallet} />
     );
 
   return (
@@ -849,7 +857,7 @@ function App(props) {
       <div className="site-page-header-ghost-wrapper">
         <Header
           extra={[
-            <Address key="address" fontSize={32} address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,
+            <Address key="address" fontSize={32} address={address} ensProvider={userProvider} blockExplorer={blockExplorer} />,
             /* <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
               <Tooltip title="History">
                 <HistoryOutlined onClick={async () => {
@@ -865,7 +873,7 @@ function App(props) {
               address={address}
               localProvider={localProvider}
               userProvider={userProvider}
-              mainnetProvider={mainnetProvider}
+              mainnetProvider={userProvider}
               price={price}
               web3Modal={web3Modal}
               loadWeb3Modal={loadWeb3Modal}
@@ -896,7 +904,7 @@ function App(props) {
       <div style={{ position: "relative", width: 320, margin: "auto", textAlign: "center", marginTop: 32 }}>
         <div style={{ padding: 10 }}>
           <AddressInput
-            ensProvider={mainnetProvider}
+            ensProvider={userProvider}
             placeholder="to address"
             disabled={walletConnectTx}
             value={toAddress}
@@ -1311,7 +1319,7 @@ function App(props) {
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
             {faucetAvailable ? (
-              <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+              <Faucet localProvider={localProvider} price={price} ensProvider={userProvider} />
             ) : (
               ""
             )}
