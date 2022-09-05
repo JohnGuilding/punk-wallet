@@ -55,16 +55,7 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem("network");
-// let targetNetwork = NETWORKS[cachedNetwork || "ethereum"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-let targetNetwork = {
-  name: "localhost",
-  color: "#666666",
-  price: "uniswap", // use mainnet eth price for localhost
-  chainId: 31337,
-  blockExplorer: "",
-  rpcUrl: "http://localhost:8545",
-}
-
+let targetNetwork = NETWORKS[cachedNetwork ?? "localhost"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 if (!targetNetwork) {
   targetNetwork = NETWORKS["ethereum"];
 }
@@ -229,7 +220,7 @@ function App(props) {
   const faucetTx = Transactor(localProvider, gasPrice, undefined, undefined, wallet);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
+  const yourLocalBalance = useBalance(userProvider, address);
 
   const balance = yourLocalBalance && formatEther(yourLocalBalance);
 
@@ -873,7 +864,7 @@ function App(props) {
               address={address}
               localProvider={localProvider}
               userProvider={userProvider}
-              mainnetProvider={userProvider}
+              mainnetProvider={mainnetProvider}
               price={price}
               web3Modal={web3Modal}
               loadWeb3Modal={loadWeb3Modal}
