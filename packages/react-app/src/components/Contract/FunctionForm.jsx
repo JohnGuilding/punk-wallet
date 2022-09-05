@@ -207,7 +207,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 // overrides.gasLimit = hexlify(1200000);
 
                 // console.log("Running with extras",extras)
-                // TODO: move arg into array? Unsure this will work with my code
                 const returned = await tx(contractFunction(...args, overrides));
                 result = tryToDisplay(returned);
               }

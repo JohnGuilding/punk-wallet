@@ -987,22 +987,23 @@ function App(props) {
               let txConfig = [
                 {
                   to: toAddress,
+                  chainId: selectedChainId,
                   value,
                 },
               ];
 
-              // if(targetNetwork.name=="arbitrum"){
-              //   //txConfig.gasLimit = 21000;
-              //   //ask rpc for gas price
-              // }else if(targetNetwork.name=="optimism"){
-              //   //ask rpc for gas price
-              // }else if(targetNetwork.name=="gnosis"){
-              //   //ask rpc for gas price
-              // }else if(targetNetwork.name=="polygon"){
-              //     //ask rpc for gas price
-              // }else{
-              //   txConfig.gasPrice = gasPrice
-              // }
+              if(targetNetwork.name=="arbitrum"){
+                //txConfig.gasLimit = 21000;
+                //ask rpc for gas price
+              }else if(targetNetwork.name=="optimism"){
+                //ask rpc for gas price
+              }else if(targetNetwork.name=="gnosis"){
+                //ask rpc for gas price
+              }else if(targetNetwork.name=="polygon"){
+                  //ask rpc for gas price
+              }else{
+                txConfig.gasPrice = gasPrice
+              }
 
               console.log("SEND AND NETWORK", targetNetwork);
               let result = tx(txConfig);
