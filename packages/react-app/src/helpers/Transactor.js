@@ -55,8 +55,6 @@ export default function Transactor(provider, gasPrice, etherscan, injectedProvid
           console.log("RUNNING TX", tx);
           result = await sendTransaction(provider, wallet, tx)
 
-          // result = await signer.sendTransaction(tx);
-
           // Store transactionResponse in localStorage, so we can speed up the transaction if needed
           // Injected providers like MetaMask can manage their transactions on their own
           if (injectedProvider === undefined) {
