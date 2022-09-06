@@ -394,16 +394,6 @@ export const NETWORKS = {
     verificationGateway: "0xa15954659EFce154a3B45cE88D8158A02bE2049A",
     aggregator: "http://localhost:3000"
   },
-  rinkarby: {
-    name: "rinkarby",
-    color: "#50a0ea",
-    price: "uniswap",
-    chainId: 421611,
-    blockExplorer: "",
-    rpcUrl: "https://rinkeby.arbitrum.io/rpc",
-    verificationGateway: "0xa15954659EFce154a3B45cE88D8158A02bE2049A",
-    aggregator: "http://localhost:3000"
-  },
   arbitrumGoerli: {
     name: "arbitrumGoerli",
     color: "#50a0ea",
